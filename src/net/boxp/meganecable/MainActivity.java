@@ -1,15 +1,20 @@
 package net.boxp.meganecable;
 
-import twitter4j.TwitterFactory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.util.Log;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.SharedPreferences;
+import android.content.Intent;
+import android.preference.PreferenceManager;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
 
 public class MainActivity extends Activity
 {
@@ -18,22 +23,54 @@ public class MainActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //テキスト入力を受け付けるビューを作成します。
+        //SharedPreferences
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        //Read SharedPreferences
+        String token = sp.getString("token",null);
+        String tokenSecret = sp.getString("tokenSecret",null);
+
+        //OAuth
+        if (token == null || tokenSecret == null) {
+          //Move to OAuth activity
+          Intent intent = new Intent(MainActivity.this, Oauth.class);
+          startActivity(intent);
+        }
+
+        //twitter object
+        final Twitter tw = new TwitterFactory().getInstance();
+        //AccessToken object
+        AccessToken at = new AccessToken(token, tokenSecret);
+        //Consumer key, Consumer key secret
+        tw.setOAuthConsumer("wEBi7xZIVIjhV6phyYLmQg", "j8nhSFbvApITevmQrOb1VYOK37xPCo5ScO2pbV6SA");
+        //Set AccessToken object
+        tw.setOAuthAccessToken(at);
+
+        // Text edit view
         final EditText editView = new EditText(MainActivity.this);
         new AlertDialog.Builder(MainActivity.this)
             .setIcon(android.R.drawable.ic_dialog_info)
-            .setTitle("テキスト入力ダイアログ")
-            //setViewにてビューを設定します。
+            .setTitle("meganecable")
+            // View
             .setView(editView)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    //入力した文字をトースト出力する
-                    Toast.makeText(MainActivity.this, 
-                            editView.getText().toString(), 
-                            Toast.LENGTH_LONG).show();
+                    // Post input strings
+                    try {
+                      tw.updateStatus(editView.getText().toString());
+                    } catch (TwitterException e) {
+                        e.printStackTrace();
+                        if (e.isCausedByNetworkIssue()) {
+                          Toast.makeText(MainActivity.this, 
+                                  "Something has wrong.", 
+                                  Toast.LENGTH_LONG).show();
+                          
+                        }
+                    }
+                    
+
                 }
             })
-            .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                 }
             })
