@@ -34,46 +34,51 @@ public class MainActivity extends Activity
           //Move to OAuth activity
           Intent intent = new Intent(MainActivity.this, Oauth.class);
           startActivity(intent);
-        }
+        } else {
 
-        //twitter object
-        final Twitter tw = new TwitterFactory().getInstance();
-        //AccessToken object
-        AccessToken at = new AccessToken(token, tokenSecret);
-        //Consumer key, Consumer key secret
-        tw.setOAuthConsumer("wEBi7xZIVIjhV6phyYLmQg", "j8nhSFbvApITevmQrOb1VYOK37xPCo5ScO2pbV6SA");
-        //Set AccessToken object
-        tw.setOAuthAccessToken(at);
+          //twitter object
+          final Twitter tw = new TwitterFactory().getInstance();
+          //AccessToken object
+          AccessToken at = new AccessToken(token, tokenSecret);
+          //Consumer key, Consumer key secret
+          tw.setOAuthConsumer("DZPpj7XHoSqWEiL736cpjw", "H4KAPjY1N4qhIFJCpVftgIKVNVcz2bwOLX8HT8NcJAc");
+          //Set AccessToken object
+          tw.setOAuthAccessToken(at);
 
-        // Text edit view
-        final EditText editView = new EditText(MainActivity.this);
-        new AlertDialog.Builder(MainActivity.this)
-            .setIcon(android.R.drawable.ic_dialog_info)
-            .setTitle("meganecable")
-            // View
-            .setView(editView)
-            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Post input strings
-                    try {
-                      tw.updateStatus(editView.getText().toString());
-                    } catch (TwitterException e) {
-                        e.printStackTrace();
-                        if (e.isCausedByNetworkIssue()) {
-                          Toast.makeText(MainActivity.this, 
-                                  "Something has wrong.", 
-                                  Toast.LENGTH_LONG).show();
-                          
-                        }
-                    }
-                    
+          // Text edit view
+          final EditText editView = new EditText(MainActivity.this);
+          new AlertDialog.Builder(MainActivity.this)
+              .setIcon(android.R.drawable.ic_dialog_info)
+              .setTitle("meganecable")
+              // View
+              .setView(editView)
+              .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int whichButton) {
+                      // Post input strings
+                      try {
+                        tw.updateStatus(editView.getText().toString());
+                        Toast.makeText(MainActivity.this, 
+                                    "Success.", 
+                                    Toast.LENGTH_LONG).show();
+                        MainActivity.this.finish();
+                      } catch (TwitterException e) {
+                          e.printStackTrace();
+                          if (e.isCausedByNetworkIssue()) {
+                            Toast.makeText(MainActivity.this, 
+                                    "Something has wrong.", 
+                                    Toast.LENGTH_LONG).show();
+                            
+                          }
+                      }
+                      
 
-                }
-            })
-            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            })
-            .show();
+                  }
+              })
+              .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int whichButton) {
+                  }
+              })
+              .show();
+      }
     }
 }

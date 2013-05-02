@@ -9,10 +9,10 @@ import android.view.View;
 import android.util.Log;
 import twitter4j.auth.OAuthAuthorization;
 import twitter4j.auth.RequestToken;
-import twitter4j.conf.ConfigurationContext;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationContext;
+import twitter4j.conf.ConfigurationBuilder;
 
 // from http://techbooster.org/android/5040/ 
 public class Oauth extends Activity {
@@ -29,13 +29,17 @@ public class Oauth extends Activity {
     }
 
     private void executeOauth(){
-        //Twitetr4Jの設定を読み込む
-        Configuration conf = ConfigurationContext.getInstance();
- 
+
+        //ConfigurationBuilder
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        //Set Consumers
+        cb.setOAuthConsumerKey("DZPpj7XHoSqWEiL736cpjw");
+        cb.setOAuthConsumerSecret("H4KAPjY1N4qhIFJCpVftgIKVNVcz2bwOLX8HT8NcJAc");
+        //Gen setting
+        Configuration conf = cb.build();
         //Oauth認証オブジェクト作成
         _oauth = new OAuthAuthorization(conf);
-        //Oauth認証オブジェクトにconsumerKeyとconsumerSecretを設定
-        _oauth.setOAuthConsumer("wEBi7xZIVIjhV6phyYLmQg", "j8nhSFbvApITevmQrOb1VYOK37xPCo5ScO2pbV6SA");
+        _oauth.setOAuthAccessToken(null);
         //アプリの認証オブジェクト作成
         try {
             _req = _oauth.getOAuthRequestToken("Callback://CallBackActivity");
