@@ -76,6 +76,7 @@ public class MainActivity extends Activity
               })
               .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int whichButton) {
+                        MainActivity.this.finish();
                   }
               })
               .show();
