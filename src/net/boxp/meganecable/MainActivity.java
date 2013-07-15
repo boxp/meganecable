@@ -11,6 +11,7 @@ import android.app.AlertDialog.Builder;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterException;
@@ -45,6 +46,19 @@ public class MainActivity extends Activity
           //Set AccessToken object
           tw.setOAuthAccessToken(at);
 
+        //IS01
+        try{
+
+            Class<?> sgManager = Class.forName("jp.co.sharp.android.softguide.SoftGuideManager");
+            Class<?> paramstype[] = {boolean.class};
+            setFullScreenMode = sgManager.getMethod("setFullScreenMode", paramstype);
+
+        }catch(Exception o){
+
+            Log.d("is01fullscreen", "failed" + o.getMessage() + ":" + o.getClass().toString());
+
+        }
+
           // Text edit view
           final EditText editView = new EditText(MainActivity.this);
           new AlertDialog.Builder(MainActivity.this)
@@ -58,7 +72,7 @@ public class MainActivity extends Activity
                       try {
                         tw.updateStatus(editView.getText().toString());
                         Toast.makeText(MainActivity.this, 
-                                    "Success.", 
+                                    "Success! -> " + editView.getText().toString(), 
                                     Toast.LENGTH_LONG).show();
                         MainActivity.this.finish();
                       } catch (TwitterException e) {
@@ -81,5 +95,48 @@ public class MainActivity extends Activity
               })
               .show();
       }
+    }
+
+    //IS01
+    @Override
+    public void onResume(){
+        super.onResume();
+        try{
+            setFullScreenMode.invoke(null, true);
+        }catch(Exception o){
+            Log.d("is01fullscreen", "failed");
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int KeyCode, KeyEvent event) {
+      Log.v("KeyDown", "KeyCode=" + keyCode);
+      return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+      Log.v("keyUp", "KeyCode=" + keyCode);
+      return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+      String action="";
+
+      switch(event.getAction()) {
+      case keyEvent.ACTION_COWN:
+        action = "Key Down";
+        break;
+      case keyEvent.ACTION_UP:
+        action = "Key Up";
+        break;
+      case keyEvent.ACTION_MULTIPLE:
+        action = "Key Multiple";
+        break;
+      }
+      
+      Log.v("KeyEvent", action + ":keyCode=" + event.getKeyCode());
+      return super.dispatchKeyEvent(event);
     }
 }
